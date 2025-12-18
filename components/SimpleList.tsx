@@ -365,7 +365,7 @@ export const SimpleList = () => {
     const visibleTasks = selectedItem ? (showCompleted ? selectedItem.tasks : selectedItem.tasks.filter(t => !t.completed)) : [];
 
     return (
-        <div className={`w-full max-w-[400px] bg-[#1a1a1a] rounded-[32px] p-3 shadow-2xl border mx-auto relative overflow-hidden h-[85vh] max-h-[600px] flex flex-col transition-colors duration-500 ${isCompleted && selectedItem ? 'border-green-500/30' : 'border-white/5'}`}>
+        <div className={`w-[90vw] md:w-[400px] bg-[#1a1a1a] rounded-[32px] p-3 shadow-2xl border mx-auto relative overflow-hidden h-[85vh] max-h-[600px] flex flex-col transition-colors duration-500 ${isCompleted && selectedItem ? 'border-green-500/30' : 'border-white/5'}`}>
             <AnimatePresence mode="wait">
                 {!selectedItem ? (
                     // MAIN LIST VIEW
