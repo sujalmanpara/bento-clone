@@ -42,8 +42,8 @@ export default function Home() {
         <SimpleList />
       </div>
 
-      {/* Background Toggles - Bottom Left */}
-      <div className="absolute bottom-10 left-10 z-50 flex items-center gap-4">
+      {/* Background Toggles - Bottom Left (Desktop) / Bottom Center (Mobile) */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-10 md:bottom-10 z-50 flex items-center gap-4">
         {/* 1. Dark Mode Toggle */}
         <button
           onClick={() => setBgMode('dark')}

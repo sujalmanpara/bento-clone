@@ -199,6 +199,7 @@ export const SimpleList = () => {
 
     // Celebration State
     const [showCelebration, setShowCelebration] = useState(false);
+    const [subTaskActionMenuId, setSubTaskActionMenuId] = useState<string | null>(null);
 
     const inputRef = useRef<HTMLInputElement>(null);
     const subTaskInputRef = useRef<HTMLInputElement>(null);
@@ -324,6 +325,22 @@ export const SimpleList = () => {
         setSelectedItem(updatedItem);
         setItems(items.map(i => i.id === updatedItem.id ? updatedItem : i));
         setShowOptions(false);
+    };
+
+    const handleDeleteSubTask = (e: React.MouseEvent, taskId: string) => {
+        e.stopPropagation();
+        if (!selectedItem) return;
+
+        const updatedTasks = selectedItem.tasks.filter(t => t.id !== taskId);
+        const updatedItem = {
+            ...selectedItem,
+            tasks: updatedTasks,
+            count: selectedItem.count > 0 ? selectedItem.count - 1 : 0
+        };
+
+        setSelectedItem(updatedItem);
+        setItems(items.map(i => i.id === updatedItem.id ? updatedItem : i));
+        setSubTaskActionMenuId(null);
     };
 
     // Quick Actions (Main List)
@@ -486,14 +503,14 @@ export const SimpleList = () => {
                                                         exit={{ opacity: 0 }}
                                                         className="flex items-center justify-end"
                                                     >
-                                                        <span className="text-sm font-bold text-neutral-600 group-hover:hidden transition-all duration-200">
+                                                        <span className="text-sm font-bold text-neutral-600 md:group-hover:hidden transition-all duration-200">
                                                             {item.tasks.length}
                                                         </span>
                                                         <motion.button
                                                             whileHover={{ scale: 1.1 }}
                                                             whileTap={{ scale: 0.9 }}
                                                             onClick={(e) => toggleActionMenu(e, item.id)}
-                                                            className="hidden group-hover:flex items-center justify-center text-neutral-600 hover:text-white transition-colors"
+                                                            className="flex md:hidden md:group-hover:flex items-center justify-center text-neutral-600 hover:text-white transition-colors ml-2 md:ml-0"
                                                         >
                                                             <GripVertical size={20} />
                                                         </motion.button>
@@ -666,7 +683,45 @@ export const SimpleList = () => {
                                                 {task.title}
                                             </span>
                                         </div>
-                                        <MoreHorizontal size={18} className="text-neutral-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="relative z-10">
+                                            <AnimatePresence>
+                                                {subTaskActionMenuId === task.id ? (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.8, x: 10 }}
+                                                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.8 }}
+                                                        className="flex items-center gap-1 bg-[#1a1a1a] rounded-lg p-1 border border-white/10 absolute right-0 -top-2 shadow-xl"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <button
+                                                            onClick={(e) => handleDeleteSubTask(e, task.id)}
+                                                            className="p-1.5 text-red-500 hover:text-red-400 hover:bg-white/5 rounded-md transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSubTaskActionMenuId(null);
+                                                            }}
+                                                            className="p-1.5 text-neutral-400 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+                                                        >
+                                                            <X size={16} />
+                                                        </button>
+                                                    </motion.div>
+                                                ) : (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSubTaskActionMenuId(task.id);
+                                                        }}
+                                                        className="p-1 text-neutral-600 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:text-neutral-300 transition-all"
+                                                    >
+                                                        <MoreHorizontal size={18} />
+                                                    </button>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
